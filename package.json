@@ -1,0 +1,22 @@
+{
+  "name": "edtool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agapodwojewska/Edtool.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agapodwojewska/Edtool/issues"
+  },
+  "homepage": "https://github.com/agapodwojewska/Edtool#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.7.0"
+  }
+}
