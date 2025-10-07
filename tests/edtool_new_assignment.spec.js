@@ -13,7 +13,7 @@ test('Test utworzenia assignmentu', async ({ page }) => {
 
 
   // Krok 2. Utworzenie assignmentu z pierwszej lekcji na górze
-    
+    // test
 
         await page.getByRole('link', { name: 'My Content' }).click();
         // zidentykowanie kart lekcji bez konkretnego ID
