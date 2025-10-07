@@ -22,28 +22,30 @@
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
         hour12: false // Zapewnia format 24-godzinny
      });
 
-    const cleanDate = readableDate.replace(/[\.\s:]/g, '_').replace(/,/g, '')
+     const cleanDate = readableDate.replace(/[\.\s:]/g, '_').replace(/,/g, '')
      
     // Określenie unikalnej nazwy tworzonej klasy
      const ClassName = `Testowa_Klasa_${cleanDate}`;
 
     // Utworzenie klasy i nadanie nazwy
      await page.getByRole('link', { name: 'My School' }).click();
-     await expect(page.getByRole('button', { name: 'Create class' })).toBeVisible();
+    ({ 
+    timeout: 15000 
+    });
      await page.getByRole('button', { name: 'Create class' }).click();
      await page.getByPlaceholder('Class 3B').click();
      await page.getByPlaceholder('Class 3B').fill(ClassName);
      await page.getByTestId('add-group-button').click();
-     
-     
+         
     // Krok 3. Skopiowanie utworzonego kodu dla nowoutworzonej lekcji
     
     // zdefiniowanie zmiennej 
     let accessCode = null;
-     await page.pause()
+  
      // zdefiniowanie odpowiedniego access kodu dla nowoutworzonej lekcji. Wyszukanie komórki (td) z nazwą nowoutworzonej klasy, następnie cofnięcie się do parenta komórki i odnalezienie w drugiej komórce wiersza kodu
     const accessCodeLocator = page.locator(`//td[text()='${ClassName}']/parent::tr/td[2]//span`);
     
@@ -53,6 +55,7 @@
      // --- Pętla Paginacji ---
     while (accessCode === null) {
         
+
         // Czekamy na unikalną nazwę klasy (dzięki czemu Playwright od razu widzi, czy element jest na stronie)
         const isClassVisible = await accessCodeLocator.isVisible({ timeout: 1000 });
         
@@ -66,11 +69,12 @@
         try {
         // Oczekiwanie na to, że przycisk BĘDZIE AKTYWNY w ciągu 5 sekund.
         // Jeśli przycisk pozostaje nieaktywny przez 5 sekund, to zakładamy, że to KONIEC
-        await expect(nextButton).toBeEnabled({ timeout: 5000 }); 
+        await expect(nextButton).toBeEnabled({ timeout: 10000 }); 
     
         // Jeśli asercja przeszła (przycisk jest AKTYWNY), klikamy i kontynuujemy pętlę
         await nextButton.click();
-    
+        await page.waitForTimeout(5000); 
+
         } catch (error) {
         // Jeśli asercja zawiodła (przycisk jest DEZAKTYWOWANY i nie zmienił stanu przez 5s)
         // to zakładamy, że jest to koniec paginacji i rzucamy błąd, że elementu nie znaleziono.

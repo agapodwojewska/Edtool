@@ -4,8 +4,7 @@ test('Test utworzenia i edycji lekcji', async ({ page }) => {
 
 
   // Krok 1. Wejście i logowanie na stronę
-  await page.goto('https://app.edtool.com/');
-  await page.getByRole('link', { name: 'Login' }).click();
+  await page.goto('https://app.edtool.com/login/');
   await page.getByRole('textbox', { name: 'Email address' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.school@learnetic.com');
   await page.getByRole('textbox', { name: 'Password' }).click();

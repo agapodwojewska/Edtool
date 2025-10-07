@@ -4,8 +4,7 @@ test('Test utworzenia assignmentu', async ({ page }) => {
 
 
   // Krok 1. Wejście i logowanie na stronę
-  await page.goto('https://app.edtool.com/');
-  await page.getByRole('link', { name: 'Login' }).click();
+  await page.goto('https://app.edtool.com/login/');
   await page.getByRole('textbox', { name: 'Email address' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.school@learnetic.com');
   await page.getByRole('textbox', { name: 'Password' }).click();
@@ -39,6 +38,7 @@ test('Test utworzenia assignmentu', async ({ page }) => {
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
+            second: '2-digit',
             hour12: false // Zapewnia format 24-godzinny
             });
 
