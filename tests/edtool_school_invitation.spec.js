@@ -4,8 +4,6 @@ test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
 
 // Krok 1. Zalogowanie na nauczyciela
   await page.goto('https://app.edtool.com/login/');
-  await expect (page.getByRole('link', { name: 'Login' })).toBeVisible();
-  await page.getByRole('link', { name: 'Login' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.school@learnetic.com');
   await page.getByRole('textbox', { name: 'Password' }).click();
@@ -18,7 +16,6 @@ test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Type students emails and' }).click();
   await page.getByRole('textbox', { name: 'Type students emails and' }).fill('agnieszka.podwojewska+testuser.student@learnetic.com');
   await page.getByRole('button', { name: 'Invite students' }).click();
-  await expect(page.getByText('agnieszka.podwojewska+').isVisible()));
 
 // Krok 3. Wylogowanie się z konta
   await page.getByRole('button', { name: 'Open user menu' }).click();
@@ -33,11 +30,32 @@ test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
     
     // Przejście do zakładki Szkoły i zaakceptowanie zaproszenia
     await page.getByRole('link', { name: 'My School' }).click();
-
+    await page.waitForLoadState('networkidle')
+    await expect(page.getByText('Teacher invited you to his')).toBeVisible();
     // Sprawdzenie czy zaakceptowana szkoła pojawiła się na liście
-    await page.getByText('Teacher invited you to his').click();
     await page.getByRole('button', { name: 'Accept' }).click();
-    await page.getByText('School').nth(1).click();
+    await expect(page.getByText('School').nth(1)).toBeVisible();
+// Krok 5. Wylogowanie się z ucznia, zalogowanie się na nauczyciela i usunięcie ucznia ze szkoły dla ponownego testu
+  
+    // wylogowanie się ucznia
+    await page.getByRole('button', { name: 'Open user menu' }).click();
+    await page.getByRole('menuitem', { name: 'Sign out' }).click();
+
+
+    // Zalogowanie się ponownie nauczyciela
+   await page.goto('https://app.edtool.com/login/');
+   await page.getByRole('textbox', { name: 'Email address' }).click();
+   await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.school@learnetic.com');
+   await page.getByRole('textbox', { name: 'Password' }).click();
+   await page.getByRole('textbox', { name: 'Password' }).fill('abcdef123456');
+   await page.getByRole('button', { name: 'Sign in' }).click();
+  
+   // Usunięcie ucznia
+   await page.getByRole('link', { name: 'My School' }).click();
+   await page.getByRole('button', { name: 'Students', exact: true }).click();
+   await page.getByRole('button', { name: 'Remove student' }).click();
+   await page.getByRole('button', { name: 'Delete' }).click();
+
 });
 
 
