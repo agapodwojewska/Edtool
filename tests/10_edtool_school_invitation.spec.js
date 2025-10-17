@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
+test('Test zaprosznia ucznia i nauczyciela do szkoły', async ({ page }) => {
 
 // Krok 1. Zalogowanie na nauczyciela
   await page.goto('https://app.edtool.com/login/');
@@ -10,18 +10,27 @@ test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).fill('abcdef123456');
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-// Krok 2. Zaproszenie ucznia do szkoły
+// Krok 2. Zaproszenie ucznia i nauczyciela do szkoły
+
+  // Zaproszenie ucznia do szkoły
   await page.getByRole('link', { name: 'My School' }).click();
   await page.getByRole('button', { name: 'Invite students' }).click();
   await page.getByRole('textbox', { name: 'Type students emails and' }).click();
   await page.getByRole('textbox', { name: 'Type students emails and' }).fill('agnieszka.podwojewska+testuser.student@learnetic.com');
   await page.getByRole('button', { name: 'Invite students' }).click();
 
-// Krok 3. Wylogowanie się z konta
+    // Zaproszenie nauczyciela do szkoły
+  await page.getByRole('link', { name: 'My School' }).click();
+  await page.getByRole('button', { name: 'Invite teachers' }).click();
+  await page.getByRole('textbox', { name: 'Type teachers emails and' }).click();
+  await page.getByRole('textbox', { name: 'Type teachers emails and' }).fill('agnieszka.podwojewska+teacher4@learnetic.com');
+  await page.getByRole('button', { name: 'Invite teachers' }).click();
+
+// Krok 3. Wylogowanie się z konta nauczyciela
   await page.getByRole('button', { name: 'Open user menu' }).click();
   await page.getByRole('menuitem', { name: 'Sign out' }).click();
 
-// Krok 4. Zalogowanie się na konto zaproszonego ucznia
+// Krok 4. Zalogowanie się na konto zaproszonego ucznia i zaakceptowania zaproszenia
   await page.getByRole('textbox', { name: 'Email address' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.student@learnetic.com');
   await page.getByRole('textbox', { name: 'Password' }).click();
@@ -40,8 +49,26 @@ test('Test zaprosznia ucznia do szkoły', async ({ page }) => {
     await page.getByRole('button', { name: 'Open user menu' }).click();
     await page.getByRole('menuitem', { name: 'Sign out' }).click();
    
+// Krok 5. Zalogowanie się na konto zaproszonego nauczyciela i zaakceptowania zaproszenia
+  await page.getByRole('textbox', { name: 'Email address' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+teacher4@learnetic.com');
+  await page.getByRole('textbox', { name: 'Password' }).click();
+  await page.getByRole('textbox', { name: 'Password' }).fill('abcdef123456');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+    
+    // Przejście do zakładki Szkoły i zaakceptowanie zaproszenia
+    await page.getByRole('link', { name: 'My School' }).click();
+    await page.waitForLoadState('networkidle')
+    await expect(page.getByText('Teacher invited you to his')).toBeVisible();
+    // Sprawdzenie czy zaakceptowana szkoła pojawiła się na liście
+    await page.getByRole('button', { name: 'Accept' }).click();
+    await expect(page.getByText('School').nth(1)).toBeVisible();
+   
+    // wylogowanie się ucznia
+    await page.getByRole('button', { name: 'Open user menu' }).click();
+    await page.getByRole('menuitem', { name: 'Sign out' }).click();
 
-    // Zalogowanie się ponownie nauczyciela
+// Krok 6. Zalogowanie się ponownie nauczyciela zapraszającego
    await page.goto('https://app.edtool.com/login/');
    await page.getByRole('textbox', { name: 'Email address' }).click();
    await page.getByRole('textbox', { name: 'Email address' }).fill('agnieszka.podwojewska+testuser.school@learnetic.com');
